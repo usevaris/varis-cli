@@ -22,7 +22,7 @@ import {
   serialiseCredentials,
 } from "../src/lib/credentials.ts";
 
-const PROD = "https://api.varis.my";
+const PROD = "https://api.usevaris.com";
 const LOCAL = "http://localhost:3000/api";
 const TOKEN_A = `var_dt_${"a".repeat(40)}`;
 const TOKEN_B = `var_dt_${"b".repeat(40)}`;

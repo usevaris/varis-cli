@@ -18,8 +18,8 @@ const OLD_TOKEN = `var_dt_${"o".repeat(40)}`;
 const CODE = {
   device_code: "var_dc_x",
   user_code: "WDJB-MJHT",
-  verification_uri: "https://varis.my/authorisation/device",
-  verification_uri_complete: "https://varis.my/authorisation/device?code=WDJB-MJHT",
+  verification_uri: "https://usevaris.com/authorisation/device",
+  verification_uri_complete: "https://usevaris.com/authorisation/device?code=WDJB-MJHT",
   expires_in: 600,
   interval: 5,
 };
@@ -233,7 +233,7 @@ describe("varis login", () => {
     const t = setup([approved], {
       request: (async () => ({
         ok: false,
-        error: { kind: "network", message: "Couldn't reach Varis at https://api.varis.my." },
+        error: { kind: "network", message: "Couldn't reach Varis at https://api.usevaris.com." },
       })) as ApiRequestFn,
     });
     expect(await runLogin([], t.output, t.deps)).toBe(1);

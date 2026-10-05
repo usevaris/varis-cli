@@ -44,5 +44,5 @@ dashboard, under **Settings > Devices**, and edit the issue to remove it.
 ## Security problems
 
 If you found a security vulnerability, don't open a public issue. Email the
-details to [security@varis.my](mailto:security@varis.my) instead, so we can
+details to [security@usevaris.com](mailto:security@usevaris.com) instead, so we can
 fix it before it's known.

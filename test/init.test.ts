@@ -119,7 +119,7 @@ describe("a new project", () => {
       "varis init --base-url <BASE_URL> --test-base-url <TEST_BASE_URL>",
     );
     expect(printed).toContain("joined to base_url when you publish and to test_base_url when you run varis test");
-    expect(printed).toContain("https://varis.my/docs/services/endpoints");
+    expect(printed).toContain("https://usevaris.com/docs/services/endpoints");
   });
 
   it("fills in the command with whichever base URL is already set", async () => {

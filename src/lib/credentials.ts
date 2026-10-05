@@ -8,7 +8,7 @@
 // in again replaces it.
 //
 //   token = "var_dt_..."
-//   api = "https://api.varis.my"
+//   api = "https://api.usevaris.com"
 //
 // `api` records the Varis server that issued the token. If the CLI is
 // pointed somewhere else, which only happens when working on Varis itself

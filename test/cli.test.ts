@@ -86,7 +86,7 @@ describe("a command that crashes", () => {
 describe("apiOrigin", () => {
   it("defaults to the Varis API", () => {
     expect(apiOrigin({})).toBe(VARIS_API_ORIGIN);
-    expect(VARIS_API_ORIGIN).toBe("https://api.varis.my");
+    expect(VARIS_API_ORIGIN).toBe("https://api.usevaris.com");
   });
 
   it("takes VARIS_API_URL for local development, dropping a trailing slash", () => {

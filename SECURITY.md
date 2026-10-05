@@ -1,7 +1,7 @@
 # Security
 
 If you find a security vulnerability in the Varis CLI or the Varis platform,
-email [security@varis.my](mailto:security@varis.my). Don't open a public
+email [security@usevaris.com](mailto:security@usevaris.com). Don't open a public
 issue, so we can fix it before it's known.
 
 Include what you found, how to reproduce it, and what an attacker could do
