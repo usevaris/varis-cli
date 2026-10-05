@@ -24,7 +24,10 @@ afterEach(async () => {
 
 async function typescriptProject() {
   await writeFile(path.join(project, "package.json"), "{}");
-  await writeFile(path.join(project, "varis.json"), JSON.stringify({ owner_id: "var_ownr_x", services: [] }));
+  await writeFile(
+    path.join(project, "varis.json"),
+    JSON.stringify({ owner_id: "var_ownr_x", services: [] }),
+  );
 }
 
 function setup(result: RunResult, env: Record<string, string> = {}) {
@@ -60,25 +63,47 @@ describe("varis build", () => {
   it("exit 0: reports the services built, and the generator's warnings", async () => {
     await typescriptProject();
     const t = setup(
-      ran(0, `${JSON.stringify({ services: ["news", "weather"], warnings: ["Move @usevaris/build to devDependencies."] })}\n`),
+      ran(
+        0,
+        `${
+          JSON.stringify({
+            services: ["news", "weather"],
+            warnings: ["Move @usevaris/build to devDependencies."],
+          })
+        }\n`,
+      ),
     );
 
     expect(await runBuild([], t.output, t.deps)).toBe(0);
 
     expect(t.ran[0]).toEqual({
-      command: ["npx", "--yes", "@usevaris/build@0"],
+      command: ["npx", "--yes", "@usevaris/build@1"],
       cwd: project,
     });
-    expect(t.out).toEqual(["✓ Built varis.json: 2 services.", "  news", "  weather"]);
-    expect(t.err).toEqual(["Warning: Move @usevaris/build to devDependencies."]);
+    expect(t.out).toEqual([
+      "✓ Built varis.json: 2 services.",
+      "  news",
+      "  weather",
+    ]);
+    expect(t.err).toEqual([
+      "Warning: Move @usevaris/build to devDependencies.",
+    ]);
   });
 
   it("exit 1: lists every problem with its file and line, ignoring npx's own lines", async () => {
     await typescriptProject();
     const stderr = [
-      "npm warn exec The following package was not found and will be installed: @usevaris/build@0.1.0",
-      JSON.stringify({ file: "src/weather.ts", line: 12, message: 'The value of "endpoint_url" must be a literal.' }),
-      JSON.stringify({ file: "varis.json", line: 0, message: "base_url must use https." }),
+      "npm warn exec The following package was not found and will be installed: @usevaris/build@1.0.0",
+      JSON.stringify({
+        file: "src/weather.ts",
+        line: 12,
+        message: 'The value of "endpoint_url" must be a literal.',
+      }),
+      JSON.stringify({
+        file: "varis.json",
+        line: 0,
+        message: "base_url must use https.",
+      }),
     ].join("\n");
     const t = setup(ran(1, "", stderr));
 
@@ -94,18 +119,33 @@ describe("varis build", () => {
 
   it("exit 2: says the generator crashed, shows why, and where to report it", async () => {
     await typescriptProject();
-    const t = setup(ran(2, "", JSON.stringify({ file: "", line: 0, message: "TypeError: boom\n    at build.js:1" })));
+    const t = setup(
+      ran(
+        2,
+        "",
+        JSON.stringify({
+          file: "",
+          line: 0,
+          message: "TypeError: boom\n    at build.js:1",
+        }),
+      ),
+    );
 
     expect(await runBuild([], t.output, t.deps)).toBe(1);
 
     const printed = t.err.join("\n");
-    expect(printed).toContain("The Varis generator crashed. This is a bug in Varis, not your code.");
+    expect(printed).toContain(
+      "The Varis generator crashed. This is a bug in Varis, not your code.",
+    );
     expect(printed).toContain("TypeError: boom");
     expect(printed).toContain("github.com/usevaris/varis-ts/issues/new");
   });
 
   it("an unrecognised project: names the markers it looks for, running nothing", async () => {
-    await writeFile(path.join(project, "varis.json"), JSON.stringify({ owner_id: "var_ownr_x" }));
+    await writeFile(
+      path.join(project, "varis.json"),
+      JSON.stringify({ owner_id: "var_ownr_x" }),
+    );
     await writeFile(path.join(project, "pyproject.toml"), "");
     const t = setup(ran(0));
 
@@ -135,7 +175,9 @@ describe("varis build", () => {
 
   it("reports a failure the contract doesn't explain, such as a failed download", async () => {
     await typescriptProject();
-    const t = setup(ran(1, "", "npm error code ENOTFOUND\nnpm error network request failed"));
+    const t = setup(
+      ran(1, "", "npm error code ENOTFOUND\nnpm error network request failed"),
+    );
     expect(await runBuild([], t.output, t.deps)).toBe(1);
     const printed = t.err.join("\n");
     expect(printed).toContain("failed without saying why (exit 1)");
@@ -148,18 +190,22 @@ describe("varis build", () => {
       VARIS_BUILD_COMMAND: "node /dev/varis-ts/packages/build/dist/cli.js",
     });
     await runBuild([], t.output, t.deps);
-    expect(t.ran[0]!.command).toEqual(["node", "/dev/varis-ts/packages/build/dist/cli.js"]);
+    expect(t.ran[0]!.command).toEqual([
+      "node",
+      "/dev/varis-ts/packages/build/dist/cli.js",
+    ]);
     expect(t.out[0]).toBe("✓ Built varis.json: no services defined yet.");
   });
 });
 
 describe("the generator contract", () => {
   it("reads a successful run from the last stdout line", () => {
-    expect(readOutcome(0, 'noise\n{"services":["a"],"warnings":[]}\n', "")).toEqual({
-      kind: "built",
-      services: ["a"],
-      warnings: [],
-    });
+    expect(readOutcome(0, 'noise\n{"services":["a"],"warnings":[]}\n', ""))
+      .toEqual({
+        kind: "built",
+        services: ["a"],
+        warnings: [],
+      });
   });
 
   it("treats exit 0 without the JSON line as unexpected", () => {
@@ -169,6 +215,10 @@ describe("the generator contract", () => {
   it("detects TypeScript from package.json", async () => {
     await writeFile(path.join(project, "package.json"), "{}");
     expect(await detectLanguage(project)).toBe(LANGUAGES[0]);
-    expect(generatorCommand(LANGUAGES[0]!, {})).toEqual(["npx", "--yes", "@usevaris/build@0"]);
+    expect(generatorCommand(LANGUAGES[0]!, {})).toEqual([
+      "npx",
+      "--yes",
+      "@usevaris/build@1",
+    ]);
   });
 });

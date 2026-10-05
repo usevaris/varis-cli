@@ -30,7 +30,7 @@ export type Language = {
  * The @usevaris/build major version this CLI speaks. npx fetches the latest
  * release within it, so a fix reaches developers without a CLI release.
  */
-export const BUILD_MAJOR = 0;
+export const BUILD_MAJOR = 1;
 
 export const LANGUAGES: readonly Language[] = [
   {
