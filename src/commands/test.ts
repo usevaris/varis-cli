@@ -14,10 +14,12 @@
 //      the developer's server runs (usually http://localhost:3000). There is
 //      no production testing: without test_base_url it stops and says how to
 //      set it.
-//   2. Works out the URL: the path of the service's endpoint_url, joined to
-//      test_base_url. https://api.example.com/v1/weather becomes
-//      http://localhost:3000/v1/weather. The generator has already resolved
-//      base_url plus path into endpoint_url, so there's one place to look.
+//   2. Works out the URL: the service's endpoint_url with its base_url
+//      prefix replaced by test_base_url. With base_url
+//      https://example.com/api, https://example.com/api/weather becomes
+//      http://localhost:3000/api/weather when test_base_url is
+//      http://localhost:3000/api. Without a matching base_url, the path of
+//      endpoint_url is joined to test_base_url.
 //   3. Takes the input from --input or --input-file and validates it against
 //      the input schema, as the gateway does before it calls a provider. A
 //      bad input is never sent.
@@ -39,6 +41,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { testUrlFor } from "../lib/base-url.ts";
 import type { Command } from "../lib/command.ts";
 import { MANIFEST_FILE, readManifest } from "../lib/manifest.ts";
 import type { Output } from "../lib/output.ts";
@@ -169,14 +172,18 @@ export async function runTest(
     return 1;
   }
 
-  // 2. The URL. Only the path of endpoint_url is kept. Its host is where the
-  // service runs in production; a test goes to the developer's server
-  // instead. endpoint_url never carries a query string: publish forbids one,
-  // because the gateway owns the query of a GET service.
+  // 2. The URL. endpoint_url is where the service runs in production; a test
+  // goes to the developer's server instead, by swapping base_url for
+  // test_base_url (testUrlFor explains the fallback). endpoint_url never
+  // carries a query string: publish forbids one, because the gateway owns the
+  // query of a GET service.
   let target: URL;
   try {
-    const endpointPath = new URL(String(service.endpoint_url)).pathname;
-    target = new URL(`${manifest.test_base_url.replace(/\/+$/, "")}${endpointPath}`);
+    target = testUrlFor(
+      String(service.endpoint_url),
+      typeof manifest.base_url === "string" ? manifest.base_url : undefined,
+      manifest.test_base_url,
+    );
   } catch {
     output.err(
       failure(
