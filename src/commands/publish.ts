@@ -66,11 +66,11 @@ const defaultDeps = (): PublishDeps => {
 
 /**
  * One service as varis build wrote it into varis.json: every field the API's
- * ServiceInput takes (slug, name, description, service_type, categories,
- * endpoint_url, method, price_cents, version, status, input_schema,
- * output_schema). The CLI reads only `slug`, for its messages and the slug
- * filter, and sends the whole object as written, so a field the generator
- * adds later reaches the API without a CLI release.
+ * ServiceInput takes (slug, name, description, instructions, service_type,
+ * categories, endpoint_url, method, price_cents, version, status,
+ * input_schema, output_schema). The CLI reads only `slug`, for its messages
+ * and the slug filter, and sends the whole object as written, so a field
+ *  the generator adds later reaches the API without a CLI release.
  */
 type ManifestService = { slug?: unknown; [field: string]: unknown };
 
